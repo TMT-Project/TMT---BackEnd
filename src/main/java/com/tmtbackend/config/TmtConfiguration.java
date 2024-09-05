@@ -3,6 +3,7 @@ package com.tmtbackend.config;
 import com.tmtbackend.model.Countries;
 import com.tmtbackend.repo.CountriesRepo;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.springframework.context.annotation.Bean;
@@ -18,6 +19,7 @@ import java.util.List;
 
 @Configuration
 @RequiredArgsConstructor
+@Slf4j
 public class TmtConfiguration {
 
     private final CountriesRepo countriesRepo;
@@ -47,7 +49,7 @@ public class TmtConfiguration {
 
             result.add(countries);
         }
-        System.out.println(result);
+        log.info(result.toString());
         for (Countries country:result){
             Countries county = new Countries();
             county.setCode(country.getCode());

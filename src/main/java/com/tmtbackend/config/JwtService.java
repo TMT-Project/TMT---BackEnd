@@ -22,13 +22,13 @@ public class JwtService {
 
     private long jwtExpiration = 8640000;
 
-    private String secretKey ="eyJhbGciOiJIUzI1NiJ9.eyJSb2xlIjoiQWRtaW4iLCJJc3N1ZXIiOiJJc3N1ZXIiLCJVc2VybmFtZSI6IkphdmFJblVzZSIsImV4cCI6MTcyNTM4NzI1OSwiaWF0IjoxNzI1Mzg3MjU5fQ.Xs14FWQ2ZPyIOXFCQQ7zC0wL8QlVIk6cRcQNV91s1_Q";
+    private String secretKey ="bS4xOJe9q4EU1D3f6Yp4heP1MSShqQPznjyvPmXRSf8=";
 
     public String generateToken(UserDetails userDetails){
         return generateToken(new HashMap<>(), userDetails);
     }
 
-    private String generateToken(Map<String, Object> claims, UserDetails userDetails) {
+    public String generateToken(Map<String, Object> claims, UserDetails userDetails) {
         return buildToken(claims, userDetails, jwtExpiration);
     }
 

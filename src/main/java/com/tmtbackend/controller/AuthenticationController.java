@@ -1,5 +1,7 @@
 package com.tmtbackend.controller;
 
+import com.tmtbackend.model.AuthenticationRequest;
+import com.tmtbackend.model.AuthenticationResponse;
 import com.tmtbackend.model.RegistrationRequest;
 import com.tmtbackend.service.AuthenticationService;
 import jakarta.validation.Valid;
@@ -23,5 +25,12 @@ public class AuthenticationController {
     ){
         authenticationService.register(request);
         return ResponseEntity.accepted().build();
+    }
+
+    @PostMapping("/authenticate")
+    public ResponseEntity<AuthenticationResponse> authenticate(
+            @RequestBody @Valid AuthenticationRequest authenticationRequest
+    ){
+        return ResponseEntity.ok(authenticationService.authenticate(authenticationRequest));
     }
 }

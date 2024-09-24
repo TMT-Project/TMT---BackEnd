@@ -11,7 +11,6 @@ import lombok.RequiredArgsConstructor;
 public class Countries {
 
     @Id
-    @GeneratedValue
     @Column(name = "id")
     private Integer id;
 

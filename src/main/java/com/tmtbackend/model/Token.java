@@ -9,25 +9,20 @@ import lombok.NoArgsConstructor;
 import java.time.LocalDateTime;
 
 @Data
-@Builder
 @AllArgsConstructor
+@Builder
 @NoArgsConstructor
 @Entity
 public class Token {
-
     @Id
     @GeneratedValue
-    private Integer id;
-
+    private int id;
     private String token;
-
     private LocalDateTime createdAt;
-
     private LocalDateTime expiresAt;
-
     private LocalDateTime validatedAt;
 
     @ManyToOne
-    @JoinColumn(name = "userId", nullable = false)
+    @JoinColumn(name = "userId",nullable = false)
     private User user;
 }

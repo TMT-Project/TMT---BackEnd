@@ -22,7 +22,15 @@ import java.util.List;
 public class Role {
 
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.TABLE,generator = "role_seq_gen")
+    @TableGenerator(
+            name = "role_seq_gen",
+            table = "role_seq",
+            pkColumnName = "seq_name",
+            valueColumnName = "next_val",
+            pkColumnValue = "role",
+            allocationSize = 1
+    )
     private Integer id;
 
     @Column(unique = true)

@@ -28,7 +28,15 @@ import java.util.stream.Collectors;
 public class User implements UserDetails, Principal {
 
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.TABLE, generator = "user_seq_gen")
+    @TableGenerator(
+            name = "user_seq_gen",
+            table = "user_seq",               // Name of the sequence table
+            pkColumnName = "seq_name",        // Name of the primary key column
+            valueColumnName = "next_val",     // Column to store the next sequence value
+            pkColumnValue = "user_seq",       // Value for this sequence in the pkColumnName
+            allocationSize = 1
+    )
     private Integer id;
 
     private String fullname;
@@ -43,6 +51,12 @@ public class User implements UserDetails, Principal {
     private String nationality;
 
     @ManyToMany(fetch = FetchType.EAGER)
+    @JoinTable(
+            name = "user_roles",
+            joinColumns = @JoinColumn(name = "user_id",nullable = false,referencedColumnName = "id"),
+            inverseJoinColumns = @JoinColumn(name = "role_id",nullable = false,referencedColumnName = "id"),
+            uniqueConstraints = @UniqueConstraint(columnNames = {"user_id","role_id"})
+    )
     private List<Role> roles;
 
     @CreatedDate

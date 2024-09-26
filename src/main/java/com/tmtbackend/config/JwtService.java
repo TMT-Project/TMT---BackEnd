@@ -1,24 +1,26 @@
 package com.tmtbackend.config;
 
+import com.tmtbackend.model.User;
+import com.tmtbackend.repo.UserRepo;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
-import org.aspectj.lang.reflect.DeclareErrorOrWarning;
+import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
 import java.security.Key;
-import java.util.Base64;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 import java.util.function.Function;
 
 
 @Service
+@RequiredArgsConstructor
 public class JwtService {
+
+    private final UserRepo userRepo;
 
     private long jwtExpiration = 8640000;
 
@@ -67,14 +69,14 @@ public class JwtService {
     }
 
     private Date extractExpiration(String token) {
-        return extractClain(token,Claims::getExpiration);
+        return extractClaim(token,Claims::getExpiration);
     }
 
     public String extractUserName(String token) {
-        return extractClain(token, Claims::getSubject);
+        return extractClaim(token, Claims::getSubject);
     }
 
-    public <T> T extractClain(String token, Function<Claims,T> claimResolver) {
+    public <T> T extractClaim(String token, Function<Claims,T> claimResolver) {
         final Claims claims = extractAllClaims(token);
         return claimResolver.apply(claims);
     }
@@ -86,5 +88,14 @@ public class JwtService {
                 .build()
                 .parseClaimsJws(token)
                 .getBody();
+    }
+
+    public Optional<User> getUserDetailsFromToken(String token){
+        final Claims claims = extractAllClaims(token);
+        Optional<User> user = userRepo.findByEmail(claims.getSubject());
+        user.get().setPassword(null);
+        user.get().setOtp(null);
+        user.get().setOtpExpiry(null);
+        return user;
     }
 }

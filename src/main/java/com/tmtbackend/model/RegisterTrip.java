@@ -11,7 +11,7 @@ import java.time.LocalDateTime;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-@ToString
+@ToString(exclude = "user")
 @Entity
 @Table(name = "trips")
 @EntityListeners(AuditingEntityListener.class)

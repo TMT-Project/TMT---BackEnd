@@ -1,10 +1,13 @@
 package com.tmtbackend.service;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.tmtbackend.model.Airports;
 import com.tmtbackend.model.Countries;
 import com.tmtbackend.model.FlightDetails;
+import com.tmtbackend.model.RegisterTrip;
 import com.tmtbackend.repo.AirportsRepo;
 import com.tmtbackend.repo.CountriesRepo;
+import com.tmtbackend.repo.RegisterTripRepo;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -15,6 +18,7 @@ import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -26,6 +30,7 @@ public class TmtService {
 
     private final CountriesRepo countriesRepo;
     private final AirportsRepo airportsRepo;
+    private final RegisterTripRepo registerTripRepo;
 
     public List<Countries> getCountries() {
         log.info(String.valueOf(countriesRepo.count()));
@@ -40,7 +45,7 @@ public class TmtService {
         return airportsRepo.findAllByTypeIn(types);
     }
 
-    public FlightDetails getFlightByNum(String flightNum, LocalDate localDate) throws IOException, InterruptedException {
+    public List<FlightDetails> getFlightByNum(String flightNum, LocalDate localDate) throws IOException, InterruptedException {
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(URI.create("https://aerodatabox.p.rapidapi.com/flights/number/"+flightNum+"/"+localDate+"?withAircraftImage=false&withLocation=false"))
                 .header("x-rapidapi-key", "95c6521fbfmsh9cf5be1c44333c7p1c4896jsn34d81033e9ed")
@@ -48,8 +53,14 @@ public class TmtService {
                 .method("GET", HttpRequest.BodyPublishers.noBody())
                 .build();
         HttpResponse<String> response = HttpClient.newHttpClient().send(request, HttpResponse.BodyHandlers.ofString());
-        System.out.println(response.body());
-        return null;
+        ObjectMapper objectMapper = new ObjectMapper();
+        List<FlightDetails> flightDetails = objectMapper.readValue(response.body(), objectMapper.getTypeFactory().constructCollectionType(List.class, FlightDetails.class));
+        return flightDetails;
     }
 
+    public List<RegisterTrip> getAllActiveTrips() {
+        List<RegisterTrip> response = registerTripRepo.findTripsWithDepartureAfter(LocalDateTime.now().plusMinutes(45));
+        System.out.println(response);
+        return null;
+    }
 }

@@ -3,6 +3,7 @@ package com.tmtbackend.controller;
 import com.tmtbackend.model.Airports;
 import com.tmtbackend.model.Countries;
 import com.tmtbackend.model.FlightDetails;
+import com.tmtbackend.model.RegisterTrip;
 import com.tmtbackend.service.TmtService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -33,8 +34,13 @@ public class TMTController {
     }
 
     @GetMapping("/getFlightByNum")
-    public FlightDetails getFlightByNum(@RequestParam String flightNum,
+    public List<FlightDetails> getFlightByNum(@RequestParam String flightNum,
                                         @RequestParam LocalDate localDate) throws IOException, InterruptedException {
         return tmtService.getFlightByNum(flightNum, localDate);
+    }
+
+    @GetMapping("/getActiveTrips")
+    public List<RegisterTrip> getActiveTrips(){
+        return tmtService.getAllActiveTrips();
     }
 }

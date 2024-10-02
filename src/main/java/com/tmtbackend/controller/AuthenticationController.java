@@ -65,14 +65,21 @@ public class AuthenticationController {
     @PostMapping("/verifyForgotOtp")
     public String verifyForgotPasswordOtp(
             @RequestParam("email") String email,
-            @RequestParam("otp") String otp,
-            @RequestParam("newPassword") String newPassword
+            @RequestParam("otp") String otp
     ){
         if (authenticationService.verifyForgotOtp(otp,email)){
-            authenticationService.resetPassword(email,newPassword);
-            return "Password has been reset successfully!";
+            return "OTP verified successfully!";
         }else {
             return "Invalid or expired OTP!";
         }
+    }
+
+    @PostMapping("/resetPassword")
+    public String resetPassword(
+            @RequestParam("email") String email,
+            @RequestParam("newPassword") String newPassword
+    ){
+        authenticationService.resetPassword(email,newPassword);
+        return "Password has been reset successfully!";
     }
 }
